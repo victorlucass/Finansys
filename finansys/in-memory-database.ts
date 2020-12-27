@@ -1,5 +1,5 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
-import { Category } from 'src/app/pages/categories/model/category';
+import { Category } from 'src/app/pages/categories/shared/model/category';
 
 export class InMemoryDatabase implements InMemoryDbService {
   createDb(){
