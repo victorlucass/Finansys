@@ -1,3 +1,4 @@
+import { Category } from './../model/category';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -14,10 +15,20 @@ export class ServicesService {
 
   constructor(private http: HttpClient) { }
 
-  getAll():Observable<Category[]>  {
-    return this.http.get(this.apiPath).pipe(
-      catchError()
-    )
+  getAll():Observable<any>{
+    return  this.http.get<Category[]>( this.apiPath);
+  }
+
+  getById(id: number): Observable<any>{
+    return this.http.get<Category>(`${this.apiPath}/${id}`);
+  }
+
+  create(cat : Category): Observable<any>{
+    return this.http.post<Category>(`${this.apiPath}`, cat);
+  }
+
+  update(cat : Category): Observable<any>{
+    return this.http.put(`${this.apiPath}/${cat.id}`, cat);
   }
 
 }
