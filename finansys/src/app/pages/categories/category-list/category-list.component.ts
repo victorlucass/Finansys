@@ -1,3 +1,6 @@
+import { element } from 'protractor';
+import { Category } from './../../../shared/model/category';
+import { ServicesService } from './../../../shared/services/services.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,13 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CategoryListComponent implements OnInit {
 
-  constructor() { }
+  categories : Category[];
 
+  constructor(private service: ServicesService) { 
+  }
+  
   ngOnInit(): void {
+    this.service.getAll().subscribe(response => { this.categories = response }, error =>{ console.log('Deu merda')});
   }
 
   alert(s:string) {
     alert(s);
+  }
+
+  delete(category : Category):void{
+    const confirmation = confirm("Deseja excluir?");
+    if(confirmation){
+      this.service.delete(category.id).subscribe(
+        () => { 
+          this.categories = this.categories.filter(element => element != category), console.log(category)
+        },
+        (error) => { alert(error) }
+      );
+    }
   }
 
 }

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, flatMap } from 'rxjs/operators';
-import { Category } from '../model/category';
 
 
 @Injectable({
@@ -29,6 +28,10 @@ export class ServicesService {
 
   update(cat : Category): Observable<any>{
     return this.http.put(`${this.apiPath}/${cat.id}`, cat);
+  }
+
+  delete(id: number) : Observable<any> {
+    return this.http.delete<any>(`${this.apiPath}/${id}`);
   }
 
 }
