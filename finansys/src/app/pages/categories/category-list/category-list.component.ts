@@ -1,6 +1,6 @@
+import { CategoryService } from './../../../services/category.service';
 import { element } from 'protractor';
 import { Category } from './../../../shared/model/category';
-import { ServicesService } from './../../../shared/services/services.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,7 +12,7 @@ export class CategoryListComponent implements OnInit {
 
   categories : Category[];
 
-  constructor(private service: ServicesService) { 
+  constructor(private service: CategoryService) { 
   }
   
   ngOnInit(): void {

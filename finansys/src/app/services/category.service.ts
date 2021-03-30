@@ -1,14 +1,12 @@
-import { Category } from './../model/category';
+import { Category } from './../shared/model/category';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError, flatMap } from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServicesService {
+export class CategoryService {
 
   private apiPath: string = 'api/categories'; //Padrão para fazer requisições no In-Memory
 
@@ -33,5 +31,4 @@ export class ServicesService {
   delete(id: number) : Observable<any> {
     return this.http.delete<any>(`${this.apiPath}/${id}`);
   }
-
 }
