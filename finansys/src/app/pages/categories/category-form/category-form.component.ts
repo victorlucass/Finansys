@@ -99,7 +99,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   
   updateCategory() {
     const categoryNew: Category = Object.assign(new Category(), this.categoryForm.value); 
-    this.categoryService.create(categoryNew).subscribe(
+    this.categoryService.update(categoryNew).subscribe(
       () => {
         this.actionsForSuccess(categoryNew);
       }, 
@@ -120,7 +120,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
   
   actionsForError(error: any) {
-    toastr.error("Erro! Descrição {" + error+ "}"); 
+    toastr.error("Ops! Algo deu errado!"); 
     if(error.status == 422){
       this.serverErrorMessages = JSON.parse(error._body).errors;
     }else{
