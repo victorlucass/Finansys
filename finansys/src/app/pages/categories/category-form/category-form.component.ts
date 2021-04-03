@@ -1,4 +1,3 @@
-import { element } from 'protractor';
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {ActivatedRoute, Router} from "@Angular/router";
@@ -17,7 +16,6 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   categoryForm: FormGroup;
   pageTitle: string;
   serverErrorMessages: string[];
-  submittingForm: boolean = false;
   category: Category = new Category();
 
 
@@ -29,52 +27,111 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   ) { }
   
   ngOnInit(): void {
-    this.setCurrentAction();
-    this.categoryFormBuilder();
+    this.setCurrentAction(); 
+    this.categoryFormBuild();
     this.loadCategory();//Vai carregar a :categoria   
   }
-  categoryFormBuilder() {
-    this.categoryForm = this.formBuilder.group({
-      id: [null],
-      name: [null, Validators.required, Validators.minLength(2)],
-      description: [null] 
-    })
-  }
-
-  loadCategory() {
-    if(this.currentAction == 'edit'){
-      this.route.params.pipe(
-        switchMap(params => this.categoryService.getById(+params.get("id")))//Ele vai carregar a categoria pelo id. 
-      ).subscribe(
-        cat => { this.category = cat, this.categoryForm.patchValue(cat) }, //Vai setar os valores no categoryForm.
-        erro => { alert('Deu merda!!!!') }
-      )
-    }
-  }
-
-
-  setCurrentAction() {
+  
+  private setCurrentAction() {
     if(this.route.snapshot.url[0].path == 'new'){//snapshot.url[0].path -> vai pegar os valores após a url raiz
       this.currentAction = 'new'
     }else{
-      this.currentAction = 'edit '
+      this.currentAction = 'edit'
     }
   }
-
   
-
-  ngAfterContentChecked(): void {//Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
-    this.setPageTitle();
-  }
-
-  setPageTitle() {
+  private setPageTitle() {
     if(this.currentAction == 'new'){
       this.pageTitle = 'Cadastrando nova Categoria: '
     }else{
       const categoryName = this.category.name || '';//Professor usou isso para evitar o delay, pois dá um delay q retorna null, então para na aparecer na tela ele usa ''
-      this.pageTitle = 'Cadastrando Categoria ' + categoryName;
+      this.pageTitle = 'Atualizando categoria: ' + categoryName;
     }
   }
+  
+  private categoryFormBuild() {
+    this.categoryForm = this.formBuilder.group({
+      id: [null],
+      name: [null, [Validators.required, Validators.minLength(2)]],
+      description: [null] 
+    })
+  }
+
+  private loadCategory() {
+    if(this.currentAction == 'edit'){
+      this.route.params
+      .pipe(
+        switchMap(
+          params => this.categoryService.getById(+params.id)//Ele vai carregar a categoria pelo id.
+          )
+        ) 
+      .subscribe(
+        (cat) => { 
+          this.category = cat, 
+          this.categoryForm.patchValue(cat)
+        }, //Vai setar os valores no categoryForm.
+        erro => { alert('Deu merda!!!!' + erro) }
+      )
+    }
+    //OBS: Caso não tenha o pipe com o switchMap ele vai retornar apenas o id vindo na url, então o pipe já traz a categoria sem precisar tratar ela no subscribe.
+  }
+
+  public submitForm() {
+    if (this.currentAction == 'new') {
+      this.createCategory();
+    } else {
+      this.updateCategory();
+    }
+  }
+  
+  createCategory() {
+    const categoryNew: Category = Object.assign(new Category(), this.categoryForm.value); 
+    // OBS: Object.assign é global, ele instancia uma nova categoria injetando os valores vindo do categoryForm.
+    this.categoryService.create(categoryNew).subscribe(
+      () => {
+        this.actionsForSuccess(categoryNew);
+      }, 
+      error => {
+        this.actionsForError(error);
+      }
+    );
+  }
+  
+  updateCategory() {
+    const categoryNew: Category = Object.assign(new Category(), this.categoryForm.value); 
+    this.categoryService.create(categoryNew).subscribe(
+      () => {
+        this.actionsForSuccess(categoryNew);
+      }, 
+      error => {
+        this.actionsForError(error);
+      }
+    );
+  }
+  
+  actionsForSuccess(categoryNew: Category) {
+    if(this.currentAction == 'new'){
+      toastr.success("Categoria cadastrada com sucesso.");
+      this.ngOnInit(); 
+    }else{
+      toastr.success("Categoria atualizada com sucesso.");
+      this.router.navigate(['categories'])
+    }
+  }
+  
+  actionsForError(error: any) {
+    toastr.error("Erro! Descrição {" + error+ "}"); 
+    if(error.status == 422){
+      this.serverErrorMessages = JSON.parse(error._body).errors;
+    }else{
+      this.serverErrorMessages = ['Erro no servidor, por favor tente mais tarde.']
+    }
+  }
+  
+  ngAfterContentChecked(): void {//Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
+    this.setPageTitle();
+  }
+
 
 
 }

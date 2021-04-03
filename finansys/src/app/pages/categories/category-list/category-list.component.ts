@@ -28,7 +28,7 @@ export class CategoryListComponent implements OnInit {
     if(confirmation){
       this.service.delete(category.id).subscribe(
         () => { 
-          this.categories = this.categories.filter(element => element != category), console.log(category)
+          this.categories = this.categories.filter(element => element != category);
         },
         (error) => { alert(error) }
       );
