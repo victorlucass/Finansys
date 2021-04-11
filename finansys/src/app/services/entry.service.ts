@@ -22,8 +22,8 @@ export class EntryService {
   create(entry: Entry): Observable<any>{
     return this.http.post<Entry> (this.apiPath, entry);
   }
-  update(id: number, entry: Entry): Observable<any>{
-    return this.http.put(`${this.apiPath}/${id}`, entry);
+  update(entry: Entry): Observable<any>{
+    return this.http.put(`${this.apiPath}/${entry.id}`, entry);
   }
   delete(id: number): Observable<any>{
     return this.http.delete<any>(`${this.apiPath}/${id}`)
