@@ -7,8 +7,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('src/app/pages/categories/categories.module').then(
         (m) => m.CategoriesModule
-      ),
+      )
   },
+  {
+    path:'entries',
+    loadChildren: () => import('src/app/pages/entries/entries.module').then(
+      (m) => m.EntriesModule
+    )
+  }
 ];
 
 @NgModule({
