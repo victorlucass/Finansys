@@ -24,7 +24,7 @@ export class EntryListComponent implements OnInit {
            entriesList = entries;
            entriesList.map(element => {
             const entry = Object.assign(new Entry(), element);
-            this.setStatus(entry)
+            EntryListComponent.setStatus(entry);
             this.entries.push(entry);
            });
         }, erro => {
@@ -43,7 +43,7 @@ export class EntryListComponent implements OnInit {
       }
     }
 
-  setStatus(entry : Entry){
+  static setStatus(entry : Entry){
     if(entry.paid == true){
       entry.status = 'PAGO'
     }else{

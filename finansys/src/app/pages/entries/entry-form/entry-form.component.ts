@@ -1,3 +1,5 @@
+import { element } from 'protractor';
+import { CategoryService } from './../../../services/category.service';
 import { EntryService } from './../../../services/entry.service';
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import toastr from 'toastr';
@@ -5,6 +7,7 @@ import { switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@Angular/router';
 import { Entry } from 'src/app/shared/model/entry';
+import { Category } from 'src/app/shared/model/category';
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',
@@ -16,18 +19,45 @@ export class EntryFormComponent implements OnInit {
   pageTitle: string;
   serverErrorMessages: string[];
   entry: Entry = new Entry();
+  categories: Category[] = [];
+
+  imaskConfig = {
+    mask : Number, //tipo
+    scale: 2, //Escalas, quantidade de decimais após a vírgulas. 
+    thousandsSeparator: '', //Separador de milhas
+    padFractionalZeros: true, //Adiciona zeros acaso a pessoa não complete tudo. 
+    normalizeZero: true, //?
+    radix: "," //Separador de decimais
+  }; 
+
+  date: Date = new Date();
+  dataAtual: string = `${this.date.getDate()}/${this.date.getMonth() + 1}/${this.date.getFullYear()}`
+
+  pt = {
+    firstDayOfWeek: 0,
+    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+    dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
+    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+    today: 'Hoje',
+    clear: 'Limpar'
+  };
 
   constructor(
     private service: EntryService,
     private route: ActivatedRoute,
     private router: Router,
-    private formsBuilder: FormBuilder
+    private formsBuilder: FormBuilder,
+    private categoryService : CategoryService
   ) {}
 
   ngOnInit(): void {
     this.setCurrentAction();
     this.entryFormBuilder();
     this.loadEntry();
+    this.loadCategories();
+    console.log(this.date.getDay())
   }
 
   private setCurrentAction() {
@@ -37,10 +67,10 @@ export class EntryFormComponent implements OnInit {
 
   private setPageTitle() {
     if(this.currentAction == 'new'){
-      this.pageTitle = 'Cadastrando nova Categoria: '
+      this.pageTitle = 'Cadastrando novo lançamento'
     }else{
       const entryName = this.entry.name || '';
-      this.pageTitle = 'Atualizando Lançamento: ' + entryName;
+      this.pageTitle = 'Atualizando lançamento: ' + entryName;
     }
   }
   private entryFormBuilder() {
@@ -48,11 +78,11 @@ export class EntryFormComponent implements OnInit {
       id: [null],
       name: [null, [Validators.required, Validators.minLength(2)]],
       description: [null],
-      type: [null, [Validators.required]],
+      type: [Entry.types.expense, [Validators.required]],
       amount: [null, [Validators.required]],
-      date: [null, [Validators.required]],
-      paid: [null, [Validators.required]],
-      entryId: [null, [Validators.required]],
+      date: [this.dataAtual, [Validators.required]],
+      paid: [true, [Validators.required]],
+      categoryId: [null, [Validators.required]],
     });
   }
 
@@ -72,8 +102,29 @@ export class EntryFormComponent implements OnInit {
     }
   }
 
+  loadCategories(): Category[] {
+    this.categoryService.getAll().subscribe(
+      element => { 
+        this.categories = element;
+      }
+    );
+
+    return this.categories;
+  }
+
   submitForm() {
     this.currentAction == 'new' ? this.createEntry() : this.updateEntry();
+  }
+
+   get typeOptions(): Array<any>{
+    return Object.entries(Entry.types).map(
+      ([value, text]) => {
+        return {
+          value: value,
+          text: text
+        }
+      }
+    )
   }
 
   createEntry() {
@@ -102,10 +153,10 @@ export class EntryFormComponent implements OnInit {
 
   actionsForSuccess(entriesNew: Entry) {
     if(this.currentAction == 'new'){
-      toastr.success("Categoria cadastrada com sucesso.");
+      toastr.success("Lançamento cadastrada com sucesso.");
       this.ngOnInit(); 
     }else{
-      toastr.success("Categoria atualizada com sucesso.");
+      toastr.success("Lançamento atualizada com sucesso.");
       this.router.navigate(['categories'])
     }
   }
@@ -117,6 +168,11 @@ export class EntryFormComponent implements OnInit {
     }else{
       this.serverErrorMessages = ['Erro no servidor, por favor tente mais tarde.']
     }
+  }
+
+  //Métodos vindo do (click)
+  setPaid(value?: boolean):void{
+    this.entryForm.get('paid').setValue(value);
   }
   
   ngAfterContentChecked(): void {//Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
