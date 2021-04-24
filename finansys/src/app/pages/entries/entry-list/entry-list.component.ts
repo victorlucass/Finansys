@@ -12,20 +12,17 @@ export class EntryListComponent implements OnInit {
   entries: Entry[] =[];
 
   
-  constructor(
-    private service: EntryService
-    ) { 
-    }
+  constructor(private service: EntryService) {}
     
     ngOnInit(): void {
       this.service.getAll().subscribe(
         (entries) => { 
            let entriesList: Entry[];
-           entriesList = entries;
-           entriesList.map(element => {
-            const entry = Object.assign(new Entry(), element);
-            EntryListComponent.setStatus(entry);
-            this.entries.push(entry);
+           entriesList = entries.sort((a,b) => b.id - a.id);
+           entriesList.map(entry => {
+            const x = Object.assign(new Entry(), entry);
+            EntryListComponent.setStatus(x);
+            this.entries.push(x);
            });
         }, erro => {
           alert('Deu merda');
