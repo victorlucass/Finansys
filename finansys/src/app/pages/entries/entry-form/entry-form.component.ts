@@ -1,4 +1,3 @@
-import { element } from 'protractor';
 import { CategoryService } from './../../../services/category.service';
 import { EntryService } from './../../../services/entry.service';
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
@@ -57,7 +56,6 @@ export class EntryFormComponent implements OnInit {
     this.entryFormBuilder();
     this.loadEntry();
     this.loadCategories();
-    console.log(this.date.getDay())
   }
 
   private setCurrentAction() {
@@ -104,8 +102,8 @@ export class EntryFormComponent implements OnInit {
 
   loadCategories(): Category[] {
     this.categoryService.getAll().subscribe(
-      element => { 
-        this.categories = element;
+      categories => { 
+        this.categories = categories;
       }
     );
 
@@ -154,10 +152,10 @@ export class EntryFormComponent implements OnInit {
   actionsForSuccess(entriesNew: Entry) {
     if(this.currentAction == 'new'){
       toastr.success("Lançamento cadastrada com sucesso.");
-      this.ngOnInit(); 
-    }else{
+      this.router.navigate(['entries']);
+     }else{
       toastr.success("Lançamento atualizada com sucesso.");
-      this.router.navigate(['categories'])
+      this.router.navigate(['entries']);
     }
   }
   
@@ -175,7 +173,8 @@ export class EntryFormComponent implements OnInit {
     this.entryForm.get('paid').setValue(value);
   }
   
-  ngAfterContentChecked(): void {//Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
+  //Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
+  ngAfterContentChecked(): void {
     this.setPageTitle();
   }
 }

@@ -3,6 +3,8 @@ import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http'
 import { Entry } from '../shared/model/entry';
 import { Observable } from 'rxjs';
+import { CategoryService } from './category.service';
+import { flatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class EntryService {
 
   private apiPath: string = `${environment.API}/entries`
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private categoryService : CategoryService) { }
 
   getAll(): Observable<any>{
     return this.http.get<Entry[]>(this.apiPath);
@@ -20,10 +22,20 @@ export class EntryService {
     return this.http.get<Entry>(`${this.apiPath}/${id}`);
   }
   create(entry: Entry): Observable<any>{
-    return this.http.post<Entry> (this.apiPath, entry);
+    return this.categoryService.getById(entry.categoryId).pipe(
+      flatMap(category => {
+        entry.category = category;
+        return this.http.post<Entry>(this.apiPath, entry);
+      })
+    )
   }
   update(entry: Entry): Observable<any>{
-    return this.http.put(`${this.apiPath}/${entry.id}`, entry);
+    return this.categoryService.getById(entry.categoryId).pipe(
+      flatMap(category => { 
+        entry.category = category;
+        return this.http.put(`${this.apiPath}/${entry.id}`, entry);
+       })
+    )
   }
   delete(id: number): Observable<any>{
     return this.http.delete<any>(`${this.apiPath}/${id}`)
