@@ -1,5 +1,5 @@
-import { CategoryService } from './../../../services/category.service';
-import { EntryService } from './../../../services/entry.service';
+import { CategoryService } from '../../../shared/services/category.service';
+import { EntryService } from '../../../shared/services/entry.service';
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import toastr from 'toastr';
 import { switchMap } from 'rxjs/operators';

@@ -1,6 +1,6 @@
 import { element } from 'protractor';
 import { Component, OnInit } from '@angular/core';
-import { EntryService } from 'src/app/services/entry.service';
+import { EntryService } from 'src/app/shared/services/entry.service';
 import { Entry } from 'src/app/shared/model/entry';
 
 @Component({

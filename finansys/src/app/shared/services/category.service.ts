@@ -1,5 +1,5 @@
-import { environment } from './../../environments/environment';
-import { Category } from './../shared/model/category';
+import { environment } from '../../../environments/environment';
+import { Category } from '../model/category';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 })
 export class CategoryService {
 
-  private apiPath: string = `${environment.API}/categories`; //Padrão para fazer requisições no In-Memory
+  private apiPath: string = `${environment.API}/categories`; //Padrão para fazer requisições no in-Memory
 
   constructor(private http: HttpClient) { }
 

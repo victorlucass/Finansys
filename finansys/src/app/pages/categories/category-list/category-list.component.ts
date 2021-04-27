@@ -1,4 +1,4 @@
-import { CategoryService } from './../../../services/category.service';
+import { CategoryService } from '../../../shared/services/category.service';
 import { element } from 'protractor';
 import { Category } from './../../../shared/model/category';
 import { Component, OnInit } from '@angular/core';

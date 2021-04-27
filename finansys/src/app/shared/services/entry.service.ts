@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { environment } from './../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http'
-import { Entry } from '../shared/model/entry';
+import { Entry } from '../model/entry';
 import { Observable } from 'rxjs';
 import { CategoryService } from './category.service';
 import { flatMap } from 'rxjs/operators';
