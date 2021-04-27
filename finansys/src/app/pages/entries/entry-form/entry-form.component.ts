@@ -1,12 +1,12 @@
-import { CategoryService } from '../../../shared/services/category.service';
-import { EntryService } from '../../../shared/services/entry.service';
+import { CategoryService } from '../../services/category.service';
+import { EntryService } from '../../services/entry.service';
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import toastr from 'toastr';
 import { switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@Angular/router';
-import { Entry } from 'src/app/shared/model/entry';
-import { Category } from 'src/app/shared/model/category';
+import { Entry } from 'src/app/pages/model/entry';
+import { Category } from 'src/app/pages/model/category';
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',
