@@ -1,35 +1,15 @@
-import { environment } from '../../../environments/environment';
 import { Category } from '../model/category';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
+import { BaseResourceService } from 'src/app/shared/services/base-resource.services';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
+export class CategoryService extends BaseResourceService<Category> {
 
-  private apiPath: string = `${environment.API}/categories`; //Padrão para fazer requisições no in-Memory
-
-  constructor(private http: HttpClient) { }
-
-  getAll():Observable<any>{
-    return  this.http.get<Category[]>( this.apiPath);
+  constructor(protected injector: Injector) { 
+    super("/categories", injector);
   }
 
-  getById(id: number): Observable<any>{
-    return this.http.get<Category>(`${this.apiPath}/${id}`);
-  }
-
-  create(cat : Category): Observable<any>{
-    return this.http.post<Category>(`${this.apiPath}`, cat);
-  }
-
-  update(cat : Category): Observable<any>{
-    return this.http.put(`${this.apiPath}/${cat.id}`, cat);
-  }
-
-  delete(id: number) : Observable<any> {
-    return this.http.delete<any>(`${this.apiPath}/${id}`);
-  }
+  
 }

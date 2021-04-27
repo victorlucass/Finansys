@@ -10,13 +10,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CategoryListComponent implements OnInit {
 
-  categories : Category[];
+  categories : Category[] = []; 
 
   constructor(private service: CategoryService) { 
   }
   
   ngOnInit(): void {
-    this.service.getAll().subscribe(response => { this.categories = response }, error =>{ console.log('Deu merda')});
+    this.service.getAll().subscribe(
+      (categories) => { 
+      let categoryList: Category[];
+      categoryList = categories.sort((a,b) => b.id - a.id);
+      categoryList.map(category => {
+        const x = Object.assign(new Category(), category);
+        this.categories.push(x)
+      });
+    }, error =>{ console.log('Deu merda')});
   }
 
   alert(s:string) {

@@ -112,10 +112,10 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   actionsForSuccess(categoryNew: Category) {
     if(this.currentAction == 'new'){
       toastr.success("Categoria cadastrada com sucesso.");
-      this.ngOnInit(); 
+      this.router.navigate(['/categories'])      
     }else{
       toastr.success("Categoria atualizada com sucesso.");
-      this.router.navigate(['categories'])
+      this.router.navigate(['/categories'])
     }
   }
   
