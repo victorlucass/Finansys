@@ -8,10 +8,10 @@ export class Entry extends BaseResource {
   public type?: string;
   public amount?: string;
   public date?: string;
-  public paid: boolean;
+  public paid?: boolean;
   public category?: Category;
   public categoryId?: number;
-  public status: string;
+  public status?: string;
   constructor() {
     super();
   }
