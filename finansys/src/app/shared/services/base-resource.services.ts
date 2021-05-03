@@ -1,4 +1,4 @@
-import { BaseResource } from "../models/base-resource";
+import { BaseResourceModel } from "../models/base-resource-model";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -6,7 +6,7 @@ import { Injector } from "@angular/core";
 import { Category } from "src/app/pages/model/category";
 
 
-export abstract class BaseResourceService<T extends BaseResource> {
+export abstract class BaseResourceService<T extends BaseResourceModel> {
     
     constructor(protected endPoint: string, protected injector: Injector){
         this.http = injector.get(HttpClient);

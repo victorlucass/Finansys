@@ -1,7 +1,7 @@
-import { BaseResource } from 'src/app/shared/models/base-resource';
+import { BaseResourceModel } from 'src/app/shared/models/base-resource-model';
 import { Category } from './category';
 
-export class Entry extends BaseResource {
+export class Entry extends BaseResourceModel {
   public id?: number;
   public name?: string;
   public description?: string;

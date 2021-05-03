@@ -1,6 +1,6 @@
-import { BaseResource } from "src/app/shared/models/base-resource";
+import { BaseResourceModel } from "src/app/shared/models/base-resource-model";
 
-export class Category extends BaseResource {
+export class Category extends BaseResourceModel {
 
     public id?: number;
     public name?: string;
@@ -10,4 +10,7 @@ export class Category extends BaseResource {
         super();
     }
 
+    static fromJson(jsonData: any): Category{
+        return Object.assign(new Category(), jsonData);
+    }
 }
