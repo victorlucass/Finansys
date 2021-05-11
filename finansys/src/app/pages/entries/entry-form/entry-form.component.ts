@@ -1,25 +1,18 @@
 import { CategoryService } from '../../services/category.service';
 import { EntryService } from '../../services/entry.service';
-import { Component, OnInit, AfterContentChecked } from '@angular/core';
-import toastr from 'toastr';
-import { switchMap } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@Angular/router';
+import { Component, Injector, OnInit } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
 import { Entry } from 'src/app/pages/model/entry';
 import { Category } from 'src/app/pages/model/category';
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form.component';
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',
   styleUrls: ['./entry-form.component.css'],
 })
-export class EntryFormComponent implements OnInit {
-  currentAction: string;
-  entryForm: FormGroup;
-  pageTitle: string;
-  serverErrorMessages: string[];
-  entry: Entry = new Entry();
+export class EntryFormComponent extends BaseResourceFormComponent<Entry> implements OnInit {
+  
   categories: Category[] = [];
-
   imaskConfig = {
     mask : Number, //tipo
     scale: 2, //Escalas, quantidade de decimais após a vírgulas. 
@@ -42,139 +35,62 @@ export class EntryFormComponent implements OnInit {
     today: 'Hoje',
     clear: 'Limpar'
   };
-
+  
   constructor(
-    private service: EntryService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private formsBuilder: FormBuilder,
-    private categoryService : CategoryService
-  ) {}
-
-  ngOnInit(): void {
-    this.setCurrentAction();
-    this.entryFormBuilder();
-    this.loadEntry();
-    this.loadCategories();
-  }
-
-  private setCurrentAction() {
-    this.currentAction =
-      this.route.snapshot.url[0].path == 'new' ? 'new' : 'edit';
-  }
-
-  private setPageTitle() {
-    if(this.currentAction == 'new'){
-      this.pageTitle = 'Cadastrando novo lançamento'
-    }else{
-      const entryName = this.entry.name || '';
-      this.pageTitle = 'Atualizando lançamento: ' + entryName;
+    protected injector: Injector,
+    protected entryService: EntryService,
+    protected categoryService: CategoryService
+    ) {
+      super(injector, new Entry(), entryService, Entry.fromJson);
     }
-  }
-  private entryFormBuilder() {
-    this.entryForm = this.formsBuilder.group({
-      id: [null],
-      name: [null, [Validators.required, Validators.minLength(2)]],
-      description: [null],
-      type: [Entry.types.expense, [Validators.required]],
-      amount: [null, [Validators.required]],
-      date: [this.dataAtual, [Validators.required]],
-      paid: [true, [Validators.required]],
-      categoryId: [null, [Validators.required]],
-    });
-  }
-
-  private loadEntry() {
-    if (this.currentAction == 'edit') {
-      this.route.params
-        .pipe(switchMap((paramsId) => this.service.getById(+paramsId.id)))
-        .subscribe(
-          (entry) => {
-            this.entry = entry;
-            this.entryForm.patchValue(entry);
-          },
-          (erro) => {
-            alert('Deu merda');
+    
+    ngOnInit() {
+      super.ngOnInit(); //Estava tendo erro devido esse ngOnInit, ou seja, deve chamar esse cara.
+      this.loadCategories();
+    }
+    
+    get typeOptions(): Array<any>{
+      return Object.entries(Entry.types).map(
+        ([value, text]) => {
+          return {
+            text : text,
+            value : value
           }
-        );
-    }
-  }
-
-  loadCategories(): Category[] {
-    this.categoryService.getAll().subscribe(
-      categories => { 
-        this.categories = categories;
-      }
-    );
-
-    return this.categories;
-  }
-
-  submitForm() {
-    this.currentAction == 'new' ? this.createEntry() : this.updateEntry();
-  }
-
-   get typeOptions(): Array<any>{
-    return Object.entries(Entry.types).map(
-      ([value, text]) => {
-        return {
-          value: value,
-          text: text
         }
+        )
       }
-    )
-  }
+      
+      protected resourceFormBuild(): void {
+          this.resourceForm = this.formBuilder.group({
+          id: [null],
+          name: [null, [Validators.required, Validators.minLength(2)]],
+          description: [null],
+          type: [Entry.types.expense, [Validators.required]],
+          amount: [null, [Validators.required]],
+          date: [this.dataAtual, [Validators.required]],
+          paid: [true, [Validators.required]],
+          categoryId: [null, [Validators.required]],
+        });
+      }
+      
+      protected createTitlePage(): string {
+        return "Novo Lançamento";
+      }
 
-  createEntry() {
-    const entryNew: Entry = Object.assign(new Entry(), this.entryForm.value);
-    this.service.create(entryNew).subscribe(
-      () => {
-        this.actionsForSuccess(entryNew);
-      },
-      (erro) => {
-        this.actionsForError(erro);
+      protected editionTitlePage(): string {
+        const entryName = this.resource.name || '';
+        return "Editando : " + entryName;
       }
+
+      
+  loadCategories() {
+    return this.categoryService.getAll().subscribe(
+      (categories) => this.categories = categories
     );
   }
 
-  updateEntry() {
-    const entryNew: Entry = Object.assign(new Entry(), this.entryForm.value);
-    this.service.update(entryNew).subscribe(
-      () => {
-        this.actionsForSuccess(entryNew);
-      },
-      (erro) => {
-        this.actionsForError(erro);
-      }
-    );
-  }
-
-  actionsForSuccess(entriesNew: Entry) {
-    if(this.currentAction == 'new'){
-      toastr.success("Lançamento cadastrada com sucesso.");
-      this.router.navigate(['entries']);
-     }else{
-      toastr.success("Lançamento atualizada com sucesso.");
-      this.router.navigate(['entries']);
-    }
-  }
-  
-  actionsForError(error: any) {
-    toastr.error("Ops! Algo deu errado!"); 
-    if(error.status == 422){
-      this.serverErrorMessages = JSON.parse(error._body).errors;
-    }else{
-      this.serverErrorMessages = ['Erro no servidor, por favor tente mais tarde.']
-    }
-  }
-
-  //Métodos vindo do (click)
   setPaid(value?: boolean):void{
-    this.entryForm.get('paid').setValue(value);
+    this.resourceForm.get('paid').setValue(value);
   }
   
-  //Esse método será efetuada após tudo tiver pronto, ou seja, é o último método ser executada.
-  ngAfterContentChecked(): void {
-    this.setPageTitle();
-  }
 }

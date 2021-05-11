@@ -20,10 +20,10 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
 
   constructor(
     protected injector: Injector,
-    public resource: T,
+    protected resource: T,
     protected resourceService: BaseResourceService<T>,
     protected jsonDataToResourceFn: (jsonData) => T
-  ) {
+   ) {
     this.route = this.injector.get(ActivatedRoute);
     this.router = this.injector.get(Router);
     this.formBuilder = this.injector.get(FormBuilder);
@@ -56,12 +56,8 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
     }
   }
 
-  createTitlePage(): string {
-    return "Novo";
-  }
-  editionTitlePage(): string {
-    return "Edição";
-  }
+  protected abstract createTitlePage(): string ;
+  protected abstract editionTitlePage(): string;
 
   protected loadResource() {
     if (this.currentAction == 'edit') {
