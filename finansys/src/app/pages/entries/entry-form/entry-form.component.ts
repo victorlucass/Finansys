@@ -4,7 +4,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { Entry } from 'src/app/pages/model/entry';
 import { Category } from 'src/app/pages/model/category';
-import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form.component';
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form/base-resource-form.component';
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',

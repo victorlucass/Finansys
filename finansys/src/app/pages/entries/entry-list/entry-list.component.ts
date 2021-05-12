@@ -2,48 +2,27 @@ import { element } from 'protractor';
 import { Component, OnInit } from '@angular/core';
 import { EntryService } from 'src/app/pages/services/entry.service';
 import { Entry } from 'src/app/pages/model/entry';
+import { BaseResourceList } from 'src/app/shared/components/base-resource-list/base-resource-list.component';
 
 @Component({
   selector: 'app-entry-list',
   templateUrl: './entry-list.component.html',
   styleUrls: ['./entry-list.component.css']
 })
-export class EntryListComponent implements OnInit {
-  entries: Entry[] =[];
+export class EntryListComponent extends BaseResourceList<Entry> implements OnInit {
 
-  
-  constructor(private service: EntryService) {}
-    
-    ngOnInit(): void {
-      this.service.getAll().subscribe(
-        (entries) => { 
-           let entriesList: Entry[];
-           entriesList = entries.sort((a,b) => b.id - a.id);
-           entriesList.map(entry => {
-            const x = Object.assign(new Entry(), entry);
-            EntryListComponent.setStatus(x);
-            this.entries.push(x);
-           });
-        }, erro => {
-          alert('Deu merda');
-        }
-      )
-    }
+  constructor(protected service: EntryService) { 
+    super(service, Entry.fromJson);
+  }
 
-    delete(entry : Entry):void{
-      const confirmation = confirm("Você deseja excluir ?");
-      if( confirmation ){
-        this.service.delete(entry.id).subscribe(
-          () => { this.entries = this.entries.filter(element => element != entry) },
-          erro => { alert(erro) }
-        )
-      }
-    }
+  ngOnInit(): void {
+    super.ngOnInit();
+  }
 
-  static setStatus(entry : Entry){
-    if(entry.paid == true){
+  static setStatus(entry: Entry) {
+    if (entry.paid == true) {
       entry.status = 'PAGO'
-    }else{
+    } else {
       entry.status = 'PENDENTE'
     }
   }

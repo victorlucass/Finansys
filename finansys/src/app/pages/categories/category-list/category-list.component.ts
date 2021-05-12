@@ -2,45 +2,19 @@ import { CategoryService } from '../../services/category.service';
 import { element } from 'protractor';
 import { Category } from '../../model/category';
 import { Component, OnInit } from '@angular/core';
-
+import { BaseResourceList } from 'src/app/shared/components/base-resource-list/base-resource-list.component';
 @Component({
   selector: 'app-category-list',
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent extends BaseResourceList<Category> implements OnInit {
 
-  categories : Category[] = []; 
-
-  constructor(private service: CategoryService) { 
+  constructor(protected service: CategoryService) { 
+    super(service, Category.fromJson);
   }
   
   ngOnInit(): void {
-    this.service.getAll().subscribe(
-      (categories) => { 
-      let categoryList: Category[];
-      categoryList = categories.sort((a,b) => b.id - a.id);
-      categoryList.map(category => {
-        const x = Object.assign(new Category(), category);
-        this.categories.push(x)
-      });
-    }, error =>{ console.log('Deu merda')});
+    super.ngOnInit()
   }
-
-  alert(s:string) {
-    alert(s);
-  }
-
-  delete(category : Category):void{
-    const confirmation = confirm("Deseja excluir?");
-    if(confirmation){
-      this.service.delete(category.id).subscribe(
-        () => { 
-          this.categories = this.categories.filter(element => element != category);
-        },
-        (error) => { alert(error) }
-      );
-    }
-  }
-
 }

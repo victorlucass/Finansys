@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from "@Angular/router";
 import toastr from 'toastr';
 import { switchMap } from "rxjs/operators";
-import { BaseResourceService } from '../services/base-resource.services';
+import { BaseResourceService } from '../../services/base-resource.services';
 
 @Injectable()
 export abstract class BaseResourceFormComponent<T extends BaseResourceModel> implements OnInit, AfterContentChecked {
