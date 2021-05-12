@@ -79,7 +79,7 @@ export class EntryFormComponent extends BaseResourceFormComponent<Entry> impleme
 
       protected editionTitlePage(): string {
         const entryName = this.resource.name || '';
-        return "Editando : " + entryName;
+        return entryName;
       }
 
       

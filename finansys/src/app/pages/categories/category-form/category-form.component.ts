@@ -30,7 +30,7 @@ export class CategoryFormComponent extends BaseResourceFormComponent<Category>{
   }
   editionTitlePage(): string {
     const categoryName = this.resource.name || "";
-    return "Editando Categoria: " + categoryName;
+    return categoryName;
   }
 
 }

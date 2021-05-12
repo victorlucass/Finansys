@@ -6,7 +6,7 @@
         
         <li *ngFor="let item of items" class="breadcrumb-item" [class.active]="isTheLastItem(item)">
             <span *ngIf="isTheLastItem(item)"> {{ item.text }} </span>
-            <span *ngIf="!isTheLastItem(item)" [routerLink] = "item.url"> {{ item.text }} </span>
+            <a *ngIf="!isTheLastItem(item)" [routerLink] = "item.url"> {{ item.text }} </a>
         </li>
     </ol>
 </nav>
