@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 @Component({
   selector: 'app-form-field-error',
   template: `
-    <p class="text-danger">
+    <p class="text-danger mt-2">
       {{ errorMessage }}
     </p>
   `,
