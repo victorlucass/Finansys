@@ -1,5 +1,5 @@
 <app-bread-crumb [items]="[{ text: 'Lançamentos', url: '/entries' }, { text: pageTitle }]"></app-bread-crumb>
-<app-page-header [page-title]="pageTitle" router="/entries"></app-page-header>
+<app-page-header [page-title]="pageTitle" router="/entries" class-button="btn float-right btn-light" title-button="voltar"></app-page-header>
 
 <form [formGroup]="resourceForm" (submit)="submitForm()">
   <div class="card">

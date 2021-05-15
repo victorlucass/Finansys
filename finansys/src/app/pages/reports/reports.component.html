@@ -1,1 +1,67 @@
-<p>reports works!</p>
+<app-bread-crumb [items]="[{ text : 'Relatórios de Receitas e Dispesas' }]"></app-bread-crumb>
+<app-page-header page-title="Relatórios de Receitas e Dispesas"></app-page-header>
+
+<div class="card">
+    <div class="card-header">
+        Selecione o mês e ano para gerar os relatórios
+    </div>
+
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group col-md-7">
+                <label for="month">Mês</label>
+                <select name="month" id="month" class="form-control">
+                    <option *ngFor="let mo of month" [value]="mo.number"> {{mo.name}} </option>
+                </select>
+            </div>
+            <div class="form-group col-md-5">
+                <label for="year">Ano</label>
+                <select #y name="year" id="year" class="form-control">
+                    <option *ngFor="let y of year" [value]="y.year"> {{ y.year }} </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md text-right">
+                <button type="button " class="btn btn-primary">Gerar Relatórios</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-deck mt-5 mb-5">
+    <div class="card text-center text-white bg-success">
+      <div class="card-header">
+        TOTAL DE RECEITAS
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">
+          <!-- {{revenueTotal}} -->
+          1000
+        </h3>
+      </div>
+    </div>
+  
+    <div class="card text-center text-white bg-danger">
+      <div class="card-header">
+        TOTAL DE DESPESAS
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">
+          <!-- {{expenseTotal}} -->
+          1000
+        </h3>
+      </div>
+    </div>
+  
+    <div class="card text-center text-white bg-info">
+      <div class="card-header">
+        SALDO
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">
+          <!-- {{balance}} -->
+          1000
+        </h3>
+      </div>
+    </div>
+  </div>

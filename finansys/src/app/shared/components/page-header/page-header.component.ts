@@ -9,6 +9,8 @@ export class PageHeaderComponent implements OnInit {
 
   @Input("page-title") pageTitle: string;
   @Input() router : string;
+  @Input("title-button") titleButton  : string;
+  @Input("class-button") classButton : string;
 
   constructor() { }
 
