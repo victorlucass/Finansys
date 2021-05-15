@@ -14,6 +14,12 @@ const routes: Routes = [
     loadChildren: () => import('src/app/pages/entries/entries.module').then(
       (m) => m.EntriesModule
     )
+  },
+  {
+    path: 'reports',
+    loadChildren: () => import('src/app/pages/reports/reports.module').then(
+      (m) => m.ReportsModule
+    )
   }
 ];
 
