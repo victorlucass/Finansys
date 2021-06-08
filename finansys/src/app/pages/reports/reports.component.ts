@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { EntryService } from 'src/app/pages/services/entry.service';
+import { Entry } from 'src/app/pages/model/entry';
+import { CategoryService } from './../services/category.service';
+import { Category } from 'src/app/pages/model/category';
+import currencyFormatter from "currency-formatter"
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -7,36 +11,36 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReportsComponent implements OnInit {
 
-  month : Array<any> = [
-    { number: '', name:'Selecione um mês'  },
-    { number: '1', name:'Janeiro'  },
-    { number: '2', name:'Fevereiro'  },
-    { number: '3', name:'Março'  },
-    { number: '4', name:'Abril'  },
-    { number: '5', name:'Maio'  },
-    { number: '6', name:'Junho'  },
-    { number: '7', name:'Julho'  },
-    { number: '8', name:'Agosto'  },
-    { number: '9', name:'Setembro'  },
-    { number: '10', name:'Outubro'  },
-    { number: '11', name:'Novembro'  },
-    { number: '12', name:'Dezembro'  },
-  ]
+  expenseTotal: any = 0;
+  revenueTotal: any = 0;
+  balance: any = 0;
+  expenseChartData: any;
+  revenueChartData: any;
+  categories: Category[] = [];
+  entries: Entry[] = [];
+  @ViewChild('month') month : ElementRef = null; //Ele se refere ao #month lá no html;
+  @ViewChild('year') year : ElementRef = null;
 
-  year: Array<any> = [
-    { year: 'Selecione um ano' },
-    { year: '2016' },
-    { year: '2017' },
-    { year: '2018' },
-    { year: '2019' },
-    { year: '2020' },
-    { year: '2021' },
-    { year: '2022' },
-  ]
-
-  constructor() { }
+  constructor(private categoryService: CategoryService, private entryService: EntryService) { }
 
   ngOnInit(): void {
+    this.categoryService.getAll().subscribe(
+      (categories) => {
+        this.categories = categories
+      }
+    )
+  }
+
+  generateReports(){
+    const month = this.month.nativeElement.value; //Pega o valor do #month;
+    const year = this.year.nativeElement.value;
+    
+    if(!month || !year){
+      alert("Você precisa selecionar o Mês e o Ano para gerar os relatórios!")
+    } else{
+      this.entryService.getByMonthAndYear(month, year);
+    }
+
   }
 
 }
