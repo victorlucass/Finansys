@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: '', pathMatch: 'full', redirectTo: 'reports'
+  },
+  {
     path: 'categories',
     loadChildren: () =>
       import('src/app/pages/categories/categories.module').then(
